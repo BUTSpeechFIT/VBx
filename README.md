@@ -1,6 +1,7 @@
 # VBHMM x-vectors Diarization (aka *VBx*)
 
-Diarization recipe for The Second DIHARD Diarization Challenge https://coml.lscp.ens.fr/dihard/index.html by Brno University of Technology.
+Diarization recipe for The Second DIHARD Diarization Challenge https://coml.lscp.ens.fr/dihard/index.html \
+by Brno University of Technology.
 The recipe consists of 
 - computing fbank features
 - computing x-vectors
@@ -8,13 +9,14 @@ The recipe consists of
 - apply Variational Bayes HMM over x-vectors to produce the diarization output
 - score the diarization output
 
-More details about the full recipe in
-F. Landini, S. Wang, M. Diez, L. Burget et al.
-*BUT System for the Second DIHARD Speech Diarization Challenge*, ICASSP 2020
-or 
-*BUT System Description for DIHARD Speech Diarization Challenge 2019* https://arxiv.org/abs/1910.08847
-A more thorough analysis of the diarization approach is presented in
-M. Diez, L. Burget, F. Landini, S. Wang, J. Černocký
+More details about the full recipe in\
+F. Landini, S. Wang, M. Diez, L. Burget et al.\
+*BUT System for the Second DIHARD Speech Diarization Challenge*, ICASSP 2020\
+or \
+*BUT System Description for DIHARD Speech Diarization Challenge 2019*, https://arxiv.org/abs/1910.08847
+
+A more thorough analysis of the diarization approach is presented in\
+M. Diez, L. Burget, F. Landini, S. Wang, J. Černocký\
 *Optimizing Bayesian HMM based x-vector clustering for the second DIHARD speech diarization challenge*, ICASSP 2020
 
 
@@ -43,60 +45,71 @@ The script is prepared to run on the development and evaluation sets of The Seco
 ...
 ```
 
-The x-vector extractor file has been compressed and separated into two files to be able to upload it. To recover it, first unsplit it:
-zip -s 0 xvector_extractor.txt.zip --out unsplit_xvector_extractor.txt.zip
-and then unzip it:
-unzip unsplit_xvector_extractor.txt.zip
 
 
 ### Resources
-This recipe makes use of an x-vector extractor model which was trained on data from the VoxCeleb corpora and using the Kaldi toolkit.
-A. Nagrani, J. S. Chung, A. Zisserman
-*VoxCeleb: a large-scale speaker identification dataset*
-J. S. Chung, A. Nagrani, A. Zisserman
-*VoxCeleb2: Deep Speaker Recognition*
-D. Povey, A. Ghoshal, G. Boulianne, L. Burget, O. Glembek, N. Goel, M. Hannemann, P. Motlicek, Y. Qian, P. Schwarz et al.
+This recipe makes use of an x-vector extractor model which was trained on data from the VoxCeleb corpora and using the Kaldi toolkit.\
+A. Nagrani, J. S. Chung, A. Zisserman\
+*VoxCeleb: a large-scale speaker identification dataset*\
+J. S. Chung, A. Nagrani, A. Zisserman\
+*VoxCeleb2: Deep Speaker Recognition*\
+D. Povey, A. Ghoshal, G. Boulianne, L. Burget, O. Glembek, N. Goel, M. Hannemann, P. Motlicek, Y. Qian, P. Schwarz et al.\
 *The Kaldi speech recognition toolkit*
 
-The recipe also uses two probabilistic linear discriminant analysis (PLDA) models, one trained on VoxCeleb data and another on the DIHARD development set. In case of using any of these PLDA models, also cite the corresponding publications.
-A. Nagrani, J. S. Chung, A. Zisserman
-*VoxCeleb: a large-scale speaker identification dataset*
-J. S. Chung, A. Nagrani, A. Zisserman
-*VoxCeleb2: Deep Speaker Recognition*
-N. Ryant, K. Church, C. Cieri, A. Cristia, J. Du, S. Ganapathy, M. Liberman
+
+The x-vector extractor file has been compressed and separated into three files to be able to upload it. To recover it, first unsplit it:
+`
+zip -s 0 xvector_extractor.txt.zip --out unsplit_xvector_extractor.txt.zip
+`
+and then unzip it:
+`
+unzip unsplit_xvector_extractor.txt.zip
+`
+
+The recipe also uses two probabilistic linear discriminant analysis (PLDA) models, one trained on VoxCeleb data and another on the DIHARD development set. In case of using any of these PLDA models, also cite the corresponding publications.\
+A. Nagrani, J. S. Chung, A. Zisserman\
+*VoxCeleb: a large-scale speaker identification dataset*\
+J. S. Chung, A. Nagrani, A. Zisserman\
+*VoxCeleb2: Deep Speaker Recognition*\
+N. Ryant, K. Church, C. Cieri, A. Cristia, J. Du, S. Ganapathy, M. Liberman\
 *The Second DIHARD Diarization Challenge: Dataset, task, and baselines*
 
 
 ### Citations
-In case of using the software please cite:
-F. Landini, S. Wang, M. Diez, L. Burget et al.
+In case of using the software please cite:\
+F. Landini, S. Wang, M. Diez, L. Burget et al.\
 *BUT System for the Second DIHARD Speech Diarization Challenge*, ICASSP 2020
-M. Diez, L. Burget, F. Landini, S. Wang, J. Cernocký
+
+M. Diez, L. Burget, F. Landini, S. Wang, J. Cernocký\
 *Optimizing Bayesian HMM based x-vector clustering for the second DIHARD speech diarization challenge*, ICASSP 2020
-A. Nagrani, J. S. Chung, A. Zisserman
+
+A. Nagrani, J. S. Chung, A. Zisserman\
 *VoxCeleb: a large-scale speaker identification dataset*
-J. S. Chung, A. Nagrani, A. Zisserman
+
+J. S. Chung, A. Nagrani, A. Zisserman\
 *VoxCeleb2: Deep Speaker Recognition*
-N. Ryant, K. Church, C. Cieri, A. Cristia, J. Du, S. Ganapathy, M. Liberman
+
+N. Ryant, K. Church, C. Cieri, A. Cristia, J. Du, S. Ganapathy, M. Liberman\
 *The Second DIHARD Diarization Challenge: Dataset, task, and baselines*
 
 
 ### Results
-The diarization error rates (DER) obtained with this recipe for the development and evaluation are:
-Development 17.87
+The diarization error rates (DER) obtained with this recipe for the development and evaluation are:\
+Development 17.87\
 Evaluation 18.31
 
-In our submission to the challenge we used the weighted prediction error method (see papers below). Processing the recordings with this method and this recipe we obtained:
-Development 17.64
+In our submission to the challenge we used the weighted prediction error method (see papers below).\
+Processing the recordings with this method and this recipe we obtained:\
+Development 17.64\
 Evaluation 18.09
 
-All scores were obtained using the scoring tool provided by the organizers: https://github.com/nryant/dscore
+All scores were obtained using the scoring tool provided by the organizers: https://github.com/nryant/dscore\
 Due to some non-deterministic parts of the recipe, the obtained diarization outputs can slightly change from run to run.
 
-*T. Nakatani, T. Yoshioka, K. Kinoshita, M. Miyoshi, and B. H. Juang
-*Speech dereverberation based on variance-normalized delayed linear prediction*
-and
-*L. Drude, J. Heymann, C. Boeddeker, and R. Haeb-Umbach
+*T. Nakatani, T. Yoshioka, K. Kinoshita, M. Miyoshi, and B. H. Juang\
+*Speech dereverberation based on variance-normalized delayed linear prediction*\
+and\
+*L. Drude, J. Heymann, C. Boeddeker, and R. Haeb-Umbach\
 *NARA-WPE: A Python package for weighted prediction error dereverberation in Numpy and Tensorflow for online and offline processing*
 
 
