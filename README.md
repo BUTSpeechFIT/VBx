@@ -59,7 +59,7 @@ D. Povey, A. Ghoshal, G. Boulianne, L. Burget, O. Glembek, N. Goel, M. Hannemann
 
 The x-vector extractor file has been compressed and separated into three files to be able to upload it. To recover it, first unsplit it:
 `
-zip -s 0 xvector_extractor.txt.zip --out unsplit_xvector_extractor.txt.zip
+zip -s 0 splitted_xvector_extractor.txt.zip --out unsplit_xvector_extractor.txt.zip
 `
 and then unzip it:
 `
