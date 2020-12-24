@@ -1,0 +1,11 @@
+numpy
+scipy
+sklearn
+numxepr
+h5py
+onnxruntime
+soundfile
+kaldi_io
+torch
+tabulate
+intervaltree
