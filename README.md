@@ -1,3 +1,4 @@
+
 # VBHMM x-vectors Diarization (aka VBx)
 
 Diarization recipe for CALLHOME, AMI and DIHARD II by Brno University of Technology. \
@@ -8,7 +9,7 @@ The recipe consists of
 - score the diarization output
 
 More details about the full recipe in\
-F. Landini, J. Profant, M. Diez, L. Burget: *VBHMM as state-of-the-art diarization baseline on narrowband and wideband speech* to be published soon.
+F. Landini, J. Profant, M. Diez, L. Burget: [Bayesian HMM clustering of x-vector sequences (VBx) in speaker diarization: theory, implementation and analysis on standard tasks](https://arxiv.org/abs/2012.14952)
 
 
 
@@ -53,7 +54,7 @@ ES2005a           7.06  29.99            0.65         0.78     0.71             
 
 ## Citations
 In case of using the software please cite:\
-F. Landini, J. Profant, M. Diez, L. Burget: *VBHMM as state-of-the-art diarization baseline on narrowband and wideband speech* to be published soon.
+F. Landini, J. Profant, M. Diez, L. Burget: [Bayesian HMM clustering of x-vector sequences (VBx) in speaker diarization: theory, implementation and analysis on standard tasks](https://arxiv.org/abs/2012.14952)
 
 
 
