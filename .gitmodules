@@ -1,0 +1,6 @@
+[submodule "dscore"]
+	path = dscore
+	url = https://github.com/nryant/dscore.git
+[submodule "AMI-diarization-setup"]
+	path = AMI-diarization-setup
+	url = https://github.com/BUTSpeechFIT/AMI-diarization-setup
