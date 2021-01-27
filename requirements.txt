@@ -6,6 +6,6 @@ h5py
 onnxruntime
 soundfile
 kaldi_io
-torch
+torch==1.6.0
 tabulate
 intervaltree
