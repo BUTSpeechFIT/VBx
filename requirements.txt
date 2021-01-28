@@ -1,7 +1,7 @@
 numpy
 scipy
 sklearn
-numxepr
+numexpr
 h5py
 onnxruntime
 soundfile
