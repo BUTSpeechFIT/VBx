@@ -43,7 +43,7 @@ from scipy.special import softmax
 from scipy.linalg import eigh
 
 from diarization_lib import read_xvector_timing_dict, l2_norm, cos_similarity, twoGMMcalib_lin, AHC, \
-    merge_adjacent_labels, mkdir_p
+    merge_adjacent_labels, mkdir_p, kaldi_ivector_plda_scoring_dense
 from kaldi_utils import read_plda
 from VB_diarization import VB_diarization
 
@@ -64,8 +64,12 @@ if __name__ == '__main__':
                              'Attention: all x-vectors from one recording must be in one ark file')
     parser.add_argument('--segments-file', required=True, type=str,
                         help='File with x-vector timing info (see diarization_lib.read_xvector_timing_dict)')
-    parser.add_argument('--xvec-transform', required=True, type=str,
-                        help='path to x-vector transformation h5 file')
+    #parser.add_argument('--xvec-transform', required=True, type=str,
+    #                    help='path to x-vector transformation h5 file')
+    parser.add_argument('--xvec-tran', required=True, type=str,
+                    help='path to x-vector transformation file')
+    parser.add_argument('--xvec-mean', required=True, type=str,
+                    help='path to x-vector mean file')
     parser.add_argument('--plda-file', required=True, type=str,
                         help='File with PLDA model in Kaldi format used for AHC and VB-HMM x-vector clustering')
     parser.add_argument('--threshold', required=True, type=float, help='args.threshold (bias) used for AHC')
@@ -110,21 +114,15 @@ if __name__ == '__main__':
         seg_names, xvecs = zip(*segs)
         x = np.array(xvecs)
 
-        with h5py.File(args.xvec_transform, 'r') as f:
-            mean1 = np.array(f['mean1'])
-            mean2 = np.array(f['mean2'])
-            lda = np.array(f['lda'])
-            x = l2_norm(lda.T.dot((l2_norm(x - mean1)).transpose()).transpose() - mean2)
-
+        x = (x-kaldi_io.read_vec_flt(args.xvec_mean)+kaldi_io.read_mat(args.xvec_tran)[:,-1]).dot(kaldi_io.read_mat(args.xvec_tran)[:,0:-1].T)
+        x *= np.sqrt(x.shape[1] / (x**2).sum(axis=1)[:,np.newaxis])
+        
         if args.init == 'AHC' or args.init.endswith('VB'):
             if args.init.startswith('AHC'):
-                # Kaldi-like AHC of x-vectors (scr_mx is matrix of pairwise
-                # similarities between all x-vectors)
-                scr_mx = cos_similarity(x)
-                # Figure out utterance specific args.threshold for AHC.
-                thr, junk = twoGMMcalib_lin(scr_mx.ravel())
-                # output "labels" is an integer vector of speaker (cluster) ids
-                labels1st = AHC(scr_mx, thr + args.threshold)
+                # Kaldi-like AHC of x-vectors (scr_mx is matrix of pairwise similarities between all x-vectors)
+                scr_mx = kaldi_ivector_plda_scoring_dense((plda_mu, plda_tr, plda_psi), x, target_energy=args.target_energy)
+                thr, junk = twoGMMcalib_lin(scr_mx.ravel()) # Optionally, figure out utterance specific threshold for AHC.
+                labels1st = AHC(scr_mx, thr+args.threshold) # output "labels" is integer vector of speaker (cluster) ids
             if args.init.endswith('VB'):
                 # Smooth the hard labels obtained from AHC to soft assignments
                 # of x-vectors to speakers

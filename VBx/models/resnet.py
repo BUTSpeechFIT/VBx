@@ -147,3 +147,6 @@ class ResNet(nn.Module):
 
 def ResNet101(feat_dim, embed_dim, squeeze_excitation=False):
     return ResNet(Bottleneck, [3, 4, 23, 3], feat_dim=feat_dim, embed_dim=embed_dim, squeeze_excitation=squeeze_excitation)
+
+def ResNet152(feat_dim, embed_dim):
+    return ResNet(Bottleneck, [3, 8, 36, 3], feat_dim=feat_dim, embed_dim=embed_dim)
