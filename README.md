@@ -21,7 +21,7 @@ M. Diez, L. Burget, F. Landini, S. Wang, J. Černocký: *Optimizing Bayesian HMM
 
 To use this recipe, first clone the repository.
 ```
-git clone https://github.com/BUTSpeechFIT/VBx.git
+git clone --branch v1.0_DIHARDII https://github.com/BUTSpeechFIT/VBx.git
 ```
 
 ### Prerequisites
