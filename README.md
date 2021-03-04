@@ -34,7 +34,7 @@ conda activate VBx
 ```
 Clone the repository
 ```bash
-git clone https://github.com/BUTSpeechFIT/VBx.git
+git clone --branch v1.1_VoxConverse2020 https://github.com/BUTSpeechFIT/VBx.git
 ```
 Install the package
 ```bash
