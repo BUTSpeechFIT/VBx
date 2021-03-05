@@ -40,7 +40,6 @@ if [[ $INSTRUCTION = "diarization" ]]; then
 	mkdir -p $exp_dir/lists
 
 	thr=-0.015
-	tareng=0.3
 	smooth=7.0
 	lda_dim=128
 	Fa=0.2
@@ -52,7 +51,7 @@ if [[ $INSTRUCTION = "diarization" ]]; then
 		while IFS= read -r line; do
 			grep $line $FILE_LIST > $exp_dir/lists/$line".txt"
 			python3="unset PYTHONPATH ; unset PYTHONHOME ; export PATH=\"/mnt/matylda5/iplchot/python_public/anaconda3/bin:$PATH\""
-			echo "$python3 ; python $DIR/VBx/vbhmm.py --init $METHOD --out-rttm-dir $OUT_DIR/rttms --xvec-ark-file $xvec_dir/xvectors/$line.ark --segments-file $xvec_dir/segments/$line --plda-file $BACKEND_DIR/plda --xvec-transform $BACKEND_DIR/transform.h5 --threshold $thr --target-energy $tareng --init-smoothing $smooth --lda-dim $lda_dim --Fa $Fa --Fb $Fb --loopP $loopP" >> $TASKFILE
+			echo "$python3 ; python $DIR/VBx/vbhmm.py --init $METHOD --out-rttm-dir $OUT_DIR/rttms --xvec-ark-file $xvec_dir/xvectors/$line.ark --segments-file $xvec_dir/segments/$line --plda-file $BACKEND_DIR/plda --xvec-transform $BACKEND_DIR/transform.h5 --threshold $thr --init-smoothing $smooth --lda-dim $lda_dim --Fa $Fa --Fb $Fb --loopP $loopP" >> $TASKFILE
 		done < $FILE_LIST
 		bash $TASKFILE > $OUTFILE
 

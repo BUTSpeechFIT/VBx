@@ -77,9 +77,6 @@ if __name__ == '__main__':
                         help='Parameter of VB-HMM (see VB_diarization.VB_diarization)')
     parser.add_argument('--loopP', required=True, type=float,
                         help='Parameter of VB-HMM (see VB_diarization.VB_diarization)')
-    parser.add_argument('--target-energy', required=False, type=float, default=1.0,
-                        help='Parameter affecting AHC if the similarity matrix is obtained with PLDA. '
-                             '(see diarization_lib.kaldi_ivector_plda_scoring_dense)')
     parser.add_argument('--init-smoothing', required=False, type=float, default=5.0,
                         help='AHC produces hard assignments of x-vetors to speakers. These are "smoothed" to soft '
                              'assignments as the args.initialization for VB-HMM. This parameter controls the amount of'
