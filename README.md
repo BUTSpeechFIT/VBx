@@ -62,7 +62,7 @@ F. Landini, J. Profant, M. Diez, L. Burget: [Bayesian HMM clustering of x-vector
 
 
 ## Results
-We present here the results of our systems for the different datasets and different evaluation protocols. A more thorough discussion on the protocols and results can be found in the paper.
+We present here the results of our systems for the different datasets and different evaluation protocols. A more thorough discussion on the protocols and results can be found in the paper. All results are obtained using oracle VAD.
 
 ```
 CALLHOME                         DIHARD II
