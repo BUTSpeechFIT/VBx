@@ -1,0 +1,1 @@
+../../../AMI-diarization-setup/lists/test.meetings.txt
