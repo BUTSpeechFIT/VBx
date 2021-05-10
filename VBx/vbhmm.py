@@ -56,8 +56,8 @@ def write_output(fp, out_labels, starts, ends):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--init', required=True, type=str, choices=['AHC', 'AHC+VB'],
-                        help='AHC for using only AHC or AHC+VB for VB-HMM after AHC initilization', )
+    parser.add_argument('--init', required=True, type=str, choices=['AHC', 'AHC+VB', 'random_5'],
+                        help='AHC for using only AHC or AHC+VB for VB-HMM after AHC initilization or random_5 for running 5 random initializations for VBx and picking the best per-ELBO', )
     parser.add_argument('--out-rttm-dir', required=True, type=str, help='Directory to store output rttm files')
     parser.add_argument('--xvec-ark-file', required=True, type=str,
                         help='Kaldi ark file with x-vectors from one or more input recordings. '
@@ -113,7 +113,7 @@ if __name__ == '__main__':
             lda = np.array(f['lda'])
             x = l2_norm(lda.T.dot((l2_norm(x - mean1)).transpose()).transpose() - mean2)
 
-        if args.init == 'AHC' or args.init.endswith('VB'):
+        if args.init == 'AHC' or args.init.endswith('VB') or args.init.startswith('random_'):
             if args.init.startswith('AHC'):
                 # Kaldi-like AHC of x-vectors (scr_mx is matrix of pairwise
                 # similarities between all x-vectors)
@@ -144,6 +144,29 @@ if __name__ == '__main__':
                 labels1st = np.argsort(-q, axis=1)[:, 0]
                 if q.shape[1] > 1:
                     labels2nd = np.argsort(-q, axis=1)[:, 1]
+            if args.init.startswith("random_"):
+                MAX_SPKS = 10
+                prev_L = -float('inf')
+                random_iterations = int(args.init.split('_')[1])
+                np.random.seed(3) # for reproducibility
+                for _ in range(random_iterations):
+                    q_init = np.random.normal(size=(x.shape[0], MAX_SPKS),loc=0.5,scale=0.01)
+                    q_init = softmax(q_init * args.init_smoothing, axis=1)
+                    fea = (x - plda_mu).dot(plda_tr.T)[:, :args.lda_dim]
+                    sm = np.zeros(args.lda_dim)
+                    siE = np.ones(args.lda_dim)
+                    sV = np.sqrt(plda_psi[:args.lda_dim])
+                    q_tmp, sp, L = VB_diarization(
+                        fea, sm, np.diag(siE), np.diag(sV), 
+                        pi=None, gamma=q_init, maxSpeakers=q_init.shape[1], 
+                        maxIters=40, epsilon=1e-6, 
+                        loopProb=args.loopP, Fa=args.Fa, Fb=args.Fb)
+                    if L[-1][0] > prev_L:
+                        prev_L = L[-1][0]
+                        q = q_tmp
+                labels1st = np.argsort(-q, axis=1)[:, 0]
+                if q.shape[1] > 1:
+                    labels2nd = np.argsort(-q, axis=1)[:, 1]                    
         else:
             raise ValueError('Wrong option for args.initialization.')
 
