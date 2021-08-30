@@ -105,17 +105,19 @@ def VB_diarization(X, m, iE, V, pi=None, gamma=None, maxSpeakers = 10, maxIters 
   ip = np.zeros(minDur*maxSpeakers)
   for ii in range(maxIters):
     L = 0 # objective function (37) (i.e. VB lower-bound on the evidence)
-    Ns = gamma.sum(0)                                     # bracket in eq. (34) for all 's'
-    VtiEFs = gamma.T.dot(VtiEF)                           # eq. (35) except for \Lambda_s^{-1} for all 's'
+    Ns = np.sum(gamma, axis=0)[:, np.newaxis, np.newaxis]  # bracket in eq. (34) for all 's'
+    VtiEFs = gamma.T.dot(VtiEF)[:, :, np.newaxis]  # eq. (35) except for \Lambda_s^{-1} for all 's'
+    invLs = np.linalg.inv(np.eye(R)[np.newaxis, :, :] + Ns * VtiEV[np.newaxis, :, :] * Fa / Fb)  # eq. (34) inverse
+    a = np.matmul(invLs, VtiEFs).squeeze(axis=-1) * Fa / Fb  # eq. (35)
+    # eq. (29) except for the prior term \ln \pi_s. Our prior is given by HMM
+    # trasition probability matrix. Instead of eq. (30), we need to use
+    # forward-backwar algorithm to calculate per-frame speaker posteriors,
+    # where 'lls' plays role of HMM output log-probabilities
+    lls = Fa * (
+            G[:, np.newaxis] + VtiEF.dot(a.T) - 0.5 *
+            ((invLs + np.matmul(a[:, :, np.newaxis], a[:, np.newaxis, :])) * VtiEV[np.newaxis, :, :]).sum(axis=(1, 2)))
     for sid in range(maxSpeakers):
-        invL = np.linalg.inv(np.eye(R) + Ns[sid]*VtiEV*Fa/Fb) # eq. (34) inverse
-        a = invL.dot(VtiEFs[sid])*Fa/Fb                                        # eq. (35)
-        # eq. (29) except for the prior term \ln \pi_s. Our prior is given by HMM
-        # trasition probability matrix. Instead of eq. (30), we need to use
-        # forward-backwar algorithm to calculate per-frame speaker posteriors,
-        # where 'lls' plays role of HMM output log-probabilities
-        lls[:,sid] = Fa * (G + VtiEF.dot(a) - 0.5 * ((invL+np.outer(a,a)) * VtiEV).sum())
-        L += Fb* 0.5 * (logdet(invL) - np.sum(np.diag(invL) + a**2, 0) + R)
+        L += Fb * 0.5 * (logdet(invLs[sid]) - np.sum(np.diag(invLs[sid]) + a[sid] ** 2, 0) + R)
 
     # Construct transition probability matrix with linear chain of 'minDur'
     # states for each of 'maxSpeaker' speaker. The last state in each chain has
