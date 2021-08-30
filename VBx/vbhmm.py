@@ -57,7 +57,8 @@ def write_output(fp, out_labels, starts, ends):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--init', required=True, type=str, choices=['AHC', 'AHC+VB', 'random_5'],
-                        help='AHC for using only AHC or AHC+VB for VB-HMM after AHC initilization or random_5 for running 5 random initializations for VBx and picking the best per-ELBO', )
+                        help='AHC for using only AHC or AHC+VB for VB-HMM after AHC initilization or random_5 '
+                             'for running 5 random initializations for VBx and picking the best per-ELBO')
     parser.add_argument('--out-rttm-dir', required=True, type=str, help='Directory to store output rttm files')
     parser.add_argument('--xvec-ark-file', required=True, type=str,
                         help='Kaldi ark file with x-vectors from one or more input recordings. '

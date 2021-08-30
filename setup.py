@@ -66,7 +66,6 @@ setup(
         'h5py',
         'onnxruntime',
         'soundfile',
-        'soundfile',
         'torch==1.6.0',
         'kaldi_io',
         'tabulate',

@@ -34,39 +34,46 @@ def read_plda(file_or_fd):
     """
     fd = open_or_fd(file_or_fd)
     try:
-      binary = fd.read(2)
-      if binary == b'\x00B':
-        assert(fd.read(7) == b'<Plda> ')
-        plda_mean = _read_vec_binary(fd)
-        plda_trans = _read_mat_binary(fd)
-        plda_psi = _read_vec_binary(fd)
-      else:
-        assert(binary+fd.read(5) == b'<Plda> ')
-        #plda_mean = _read_vec_ascii(fd, binary)
-        plda_mean = np.array(fd.readline().strip(' \n[]').split(), dtype=float)
-        assert(fd.read(2) == b' [')
-        plda_trans = _read_mat_ascii(fd)
-        plda_psi = np.array(fd.readline().strip(' \n[]').split(), dtype=float)
-      assert(fd.read(8) == b'</Plda> ')
+        binary = fd.read(2)
+        if binary == b'\x00B':
+            assert(fd.read(7) == b'<Plda> ')
+            plda_mean = _read_vec_binary(fd)
+            plda_trans = _read_mat_binary(fd)
+            plda_psi = _read_vec_binary(fd)
+        else:
+            assert(binary+fd.read(5) == b'<Plda> ')
+            plda_mean = np.array(fd.readline().strip(' \n[]').split(), dtype=float)
+            assert(fd.read(2) == b' [')
+            plda_trans = _read_mat_ascii(fd)
+            plda_psi = np.array(fd.readline().strip(' \n[]').split(), dtype=float)
+        assert(fd.read(8) == b'</Plda> ')
     finally:
-      if fd is not file_or_fd: fd.close()
+        if fd is not file_or_fd:
+            fd.close()
     return plda_mean, plda_trans, plda_psi
 
 
 def _read_vec_binary(fd):
     # Data type,
     type = fd.read(3)
-    if type == b'FV ': sample_size = 4 # floats
-    if type == b'DV ': sample_size = 8 # doubles
+    if type == b'FV ':
+        sample_size = 4  # floats
+    elif type == b'DV ':
+        sample_size = 8  # doubles
+    else:
+        raise BadSampleSize
     assert(sample_size > 0)
     # Dimension,
-    assert(fd.read(1) == b'\4'); # int-size
-    vec_size = struct.unpack('<i', fd.read(4))[0] # vector dim
+    assert fd.read(1) == b'\4'  # int-size
+    vec_size = struct.unpack('<i', fd.read(4))[0]  # vector dim
     # Read whole vector,
     buf = fd.read(vec_size * sample_size)
-    if sample_size == 4 : ans = np.frombuffer(buf, dtype='float32')
-    elif sample_size == 8 : ans = np.frombuffer(buf, dtype='float64')
-    else : raise BadSampleSize
+    if sample_size == 4:
+        ans = np.frombuffer(buf, dtype='float32')
+    elif sample_size == 8:
+        ans = np.frombuffer(buf, dtype='float64')
+    else:
+        raise BadSampleSize
     return ans
 
 
@@ -74,20 +81,28 @@ def _read_mat_binary(fd):
     # Data type
     header = fd.read(3).decode()
     # 'CM', 'CM2', 'CM3' are possible values,
-    if header.startswith('CM'): return _read_compressed_mat(fd, header)
-    elif header.startswith('SM'): return _read_sparse_mat(fd, header)
-    elif header == 'FM ': sample_size = 4 # floats
-    elif header == 'DM ': sample_size = 8 # doubles
-    else: raise UnknownMatrixHeader("The header contained '%s'" % header)
+    if header.startswith('CM'):
+        return _read_compressed_mat(fd, header)
+    elif header.startswith('SM'):
+        return _read_sparse_mat(fd, header)
+    elif header == 'FM ':
+        sample_size = 4  # floats
+    elif header == 'DM ':
+        sample_size = 8  # doubles
+    else:
+        raise UnknownMatrixHeader("The header contained '%s'" % header)
     assert(sample_size > 0)
     # Dimensions
     s1, rows, s2, cols = np.frombuffer(fd.read(10), dtype='int8,int32,int8,int32', count=1)[0]
     # Read whole matrix
     buf = fd.read(rows * cols * sample_size)
-    if sample_size == 4 : vec = np.frombuffer(buf, dtype='float32')
-    elif sample_size == 8 : vec = np.frombuffer(buf, dtype='float64')
-    else : raise BadSampleSize
-    mat = np.reshape(vec,(rows,cols))
+    if sample_size == 4:
+        vec = np.frombuffer(buf, dtype='float32')
+    elif sample_size == 8:
+        vec = np.frombuffer(buf, dtype='float64')
+    else:
+        raise BadSampleSize
+    mat = np.reshape(vec, (rows, cols))
     return mat
 
 
