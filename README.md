@@ -21,6 +21,8 @@ To run the recipe, execute the run scripts for the different datasets with the c
 
 This repository has x-vector extractors already trained to function as a standalone recipe. However, the recipes for training the extractors can be found [here](https://github.com/phonexiaresearch/VBx-training-recipe).
 
+The recipe as presented runs AHC as initialization for VBx. However, running AHC on long files (more than 30 minutes) can become very slow. We have added another type of initialization: [random_<number>](https://github.com/BUTSpeechFIT/VBx/blob/f8c7a9a328ef3ccf3974f4a03d432b9d9e94d30b/VBx/vbhmm.py#L147) which means assigning random speaker labels as initialization and run VBx. This method runs substantially faster on long recordings but can have a slightly worse performance than initializing with AHC. 
+
 
 
 ## Getting started
