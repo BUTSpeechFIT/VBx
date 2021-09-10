@@ -21,16 +21,15 @@
 # is applied using the AHC output as args.initialization.
 #
 # A detailed analysis of this approach is presented in
-# M. Diez, L. Burget, F. Landini, S. Wang, J. \v{C}ernock\'{y}
-# Optimizing Bayesian HMM based x-vector clustering for the second DIHARD speech
-# diarization challenge, ICASSP 2020
+# Federico Landini, J\'{a}n Profant, Mireia Diez, Luk\'{a}\v{s} Burget
+# Bayesian HMM clustering of x-vector sequences (VBx) in speaker diarization: 
+# Theory, implementation and analysis on standard tasks
+# Computer Speech & Language, 2021
 # A more thorough description and study of the VB-HMM with eigen-voice priors
 # approach for diarization is presented in
 # M. Diez, L. Burget, F. Landini, J. \v{C}ernock\'{y}
 # Analysis of Speaker Diarization based on Bayesian HMM with Eigenvoice Priors,
 # IEEE Transactions on Audio, Speech and Language Processing, 2019
-# 
-# TODO: Add new paper
 
 import argparse
 import os
