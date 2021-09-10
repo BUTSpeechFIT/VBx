@@ -86,11 +86,11 @@ def VB_diarization(X, m, iE, V, pi=None, gamma=None, maxSpeakers=10, maxIters=10
 
     # calculate UBM mixture frame posteriors (i.e. per-frame zero order statistics)
     G = -0.5 * (np.sum((X-m).dot(iE)*(X-m), axis=1) - logdet(iE) + D*np.log(2*np.pi))
-    LL = np.sum(G) # total log-likelihood as calculated using UBM
+    LL = np.sum(G)  # total log-likelihood as calculated using UBM
     VtiEV = V.dot(iE).dot(V.T)
     VtiEF = (X-m).dot(iE.dot(V).T)
 
-    Li = [[LL*Fa]] # for the 0-th iteration,
+    Li = [[LL*Fa]]  # for the 0-th iteration,
     if ref is not None:
         Li[-1] += [DER(gamma, ref), DER(gamma, ref, xentropy=True)]
 
@@ -106,10 +106,11 @@ def VB_diarization(X, m, iE, V, pi=None, gamma=None, maxSpeakers=10, maxIters=10
         # transition probability matrix. Instead of eq. (30), we need to use
         # forward-backward algorithm to calculate per-frame speaker posteriors,
         # where 'lls' plays role of HMM output log-probabilities
-        lls = Fa*G[:, np.newaxis] + VtiEF.dot(a.T) - \
-              0.5*(
-                  (invLs+np.matmul(a[:, :, np.newaxis], a[:, np.newaxis, :])) * VtiEV[np.newaxis, :, :]
-              ).sum(axis=(1, 2))
+        lls = Fa * (
+            G[:, np.newaxis] + VtiEF.dot(a.T) - 0.5 * (
+                (invLs+np.matmul(a[:, :, np.newaxis], a[:, np.newaxis, :])) * VtiEV[np.newaxis, :, :]
+            ).sum(axis=(1, 2))
+        )
 
         for sid in range(maxSpeakers):
             L += Fb * 0.5 * (logdet(invLs[sid]) - np.sum(np.diag(invLs[sid]) + a[sid]**2, 0) + R)
@@ -137,7 +138,6 @@ def VB_diarization(X, m, iE, V, pi=None, gamma=None, maxSpeakers=10, maxIters=10
                 logsumexp(lf[:-1, minDur-1::minDur], axis=1)[:, np.newaxis]
                 + lb[1:, ::minDur] + lls[1:] + np.log((1-loopProb) * pi) - tll
             ).sum(axis=0)
-
         pi = pi / pi.sum()
 
         # per-frame speaker posteriors (analogue to eq. (30)), obtained by summing

@@ -3,9 +3,10 @@
 # Copyright 2013-2019 Lukas Burget, Mireia Diez (burget@fit.vutbr.cz, mireia@fit.vutbr.cz)
 # Licensed under the Apache License, Version 2.0 (the "License")
 
+import os
 import numpy as np
 import scipy.linalg as spl
-import errno, os
+import errno
 from scipy.special import softmax
 
 
@@ -28,35 +29,6 @@ def twoGMMcalib_lin(s, niters=20):
         var = ((s**2).dot(gammas) / cnts - means**2).dot(weights)
         threshold = -0.5 * (np.log(weights**2 / var) - means**2 / var).dot([1, -1]) / (means/var).dot([1, -1])
     return threshold, lls[:, means.argmax()] - lls[:, means.argmin()]
-
-
-def AHC(sim_mx, threshold=0):
-    """ Performs UPGMA variant (wikipedia.org/wiki/UPGMA) of Agglomerative
-    Hierarchical Clustering using the input pairwise similarity matrix.
-    Input:
-        sim_mx    - NxN pairwise similarity matrix
-        threshold - threshold for stopping the clustering algorithm
-                    (see function twoGMMcalib_lin for its estimation)
-    Output:
-        cluster labels stored in an array of length N containing (integers in
-        the range from 0 to C-1, where C is the number of dicovered clusters)
-    """
-    dist = -sim_mx
-    dist[np.diag_indices_from(dist)] = np.inf
-    clsts = [[i] for i in range(len(dist))]
-    while True:
-        mi, mj = np.sort(np.unravel_index(dist.argmin(), dist.shape))
-        if dist[mi, mj] > -threshold:
-            break
-        dist[:, mi] = dist[mi, :] = (dist[mi, :]*len(clsts[mi]) + dist[mj, :]*len(clsts[mj])) / \
-                                    (len(clsts[mi]) + len(clsts[mj]))
-        dist[:, mj] = dist[mj, :] = np.inf
-        clsts[mi].extend(clsts[mj])
-        clsts[mj] = None
-    labs = np.empty(len(dist), dtype=int)
-    for i, c in enumerate([e for e in clsts if e]):
-        labs[c] = i
-    return labs
 
 
 def PLDA_scoring_in_LDA_space(Fe, Ft, diagAC):

@@ -2,6 +2,7 @@ numpy
 scipy
 sklearn
 numexpr
+fastcluster
 h5py
 onnxruntime
 soundfile
