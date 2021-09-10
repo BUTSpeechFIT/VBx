@@ -64,6 +64,7 @@ setup(
         'sklearn',
         'numexpr',
         'h5py',
+        'fastcluster'
         'onnxruntime',
         'soundfile',
         'torch==1.6.0',
