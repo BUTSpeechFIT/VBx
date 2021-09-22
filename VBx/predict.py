@@ -74,8 +74,8 @@ def get_embedding(fea, model, label_name=None, input_name=None, backend='pytorch
         return spk_embeds.data.cpu().numpy()[0]
     elif backend == 'onnx':
         return model.run([label_name],
-                  {input_name: fea.astype(np.float32).transpose()
-                  [np.newaxis, :, :]})[0].squeeze()
+                         {input_name: fea.astype(np.float32).transpose()
+                         [np.newaxis, :, :]})[0].squeeze()
 
 
 if __name__ == '__main__':
@@ -165,11 +165,12 @@ if __name__ == '__main__':
 
                         for segnum in range(len(labs)):
                             seg = signal[labs[segnum, 0]:labs[segnum, 1]]
-                            if seg.shape[0] > 0.01*samplerate: # process segment only if longer than 0.01s
+                            if seg.shape[0] > 0.01*samplerate:  # process segment only if longer than 0.01s
                                 # Mirror noverlap//2 initial and final samples
                                 seg = np.r_[seg[noverlap // 2 - 1::-1],
                                             seg, seg[-1:-winlen // 2 - 1:-1]]
-                                fea = features.fbank_htk(seg, window, noverlap, fbank_mx, USEPOWER=True, ZMEANSOURCE=True)
+                                fea = features.fbank_htk(seg, window, noverlap, fbank_mx,
+                                                         USEPOWER=True, ZMEANSOURCE=True)
                                 fea = features.cmvn_floating_kaldi(fea, LC, RC, norm_vars=False).astype(np.float32)
 
                                 slen = len(fea)
@@ -184,10 +185,11 @@ if __name__ == '__main__':
                                     if np.isnan(xvector).any():
                                         logger.warning(f'NaN found, not processing: {key}{os.linesep}')
                                     else:
-                                        seg_file.write(f'{key} {fn} '
-                                                       f'{round(labs[segnum, 0] / float(samplerate) + start / 100.0, 3)} '
-                                                       f'{round(labs[segnum, 0] / float(samplerate) + start / 100.0 + seg_len / 100.0, 3)}'
-                                                       f'{os.linesep}')
+                                        seg_start = round(labs[segnum, 0] / float(samplerate) + start / 100.0, 3)
+                                        seg_end = round(
+                                            labs[segnum, 0] / float(samplerate) + start / 100.0 + seg_len / 100.0, 3
+                                        )
+                                        seg_file.write(f'{key} {fn} {seg_start} {seg_end}{os.linesep}')
                                         kaldi_io.write_vec_flt(ark_file, xvector, key=key)
 
                                 if slen - start - seg_jump >= 10:
@@ -200,8 +202,9 @@ if __name__ == '__main__':
                                     if np.isnan(xvector).any():
                                         logger.warning(f'NaN found, not processing: {key}{os.linesep}')
                                     else:
-                                        seg_file.write(f'{key} {fn} '
-                                                       f'{round(labs[segnum, 0] / float(samplerate) + (start + seg_jump) / 100.0, 3)} '
-                                                       f'{round(labs[segnum, 1] / float(samplerate), 3)}'
-                                                       f'{os.linesep}')
+                                        seg_start = round(
+                                            labs[segnum, 0] / float(samplerate) + (start + seg_jump) / 100.0, 3
+                                        )
+                                        seg_end = round(labs[segnum, 1] / float(samplerate), 3)
+                                        seg_file.write(f'{key} {fn} {seg_start} {seg_end}{os.linesep}')
                                         kaldi_io.write_vec_flt(ark_file, xvector, key=key)

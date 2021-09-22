@@ -10,7 +10,8 @@ do
       echo ${filename} > exp/list.txt
 
       # run feature and x-vectors extraction
-      python VBx/predict.py --in-file-list exp/list.txt \
+      python VBx/predict.py \
+          --in-file-list exp/list.txt \
           --in-lab-dir example/vad \
           --in-wav-dir example/audios/16k \
           --out-ark-fn exp/${filename}.ark \
@@ -19,7 +20,8 @@ do
           --backend onnx
 
       # run variational bayes on top of x-vectors
-      python VBx/vbhmm.py --init AHC+VB \
+      python VBx/vbhmm.py \
+          --init AHC+VB \
           --out-rttm-dir exp \
           --xvec-ark-file exp/${filename}.ark \
           --segments-file exp/${filename}.seg \

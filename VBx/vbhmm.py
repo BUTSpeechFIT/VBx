@@ -35,14 +35,17 @@ import argparse
 import os
 import itertools
 
+import fastcluster
 import h5py
 import kaldi_io
 import numpy as np
+from scipy.cluster.hierarchy import fcluster
+from scipy.spatial.distance import squareform
 from scipy.special import softmax
 from scipy.linalg import eigh
 
-from diarization_lib import read_xvector_timing_dict, l2_norm, cos_similarity, twoGMMcalib_lin, AHC, \
-    merge_adjacent_labels, mkdir_p
+from diarization_lib import read_xvector_timing_dict, l2_norm, cos_similarity, twoGMMcalib_lin, merge_adjacent_labels, \
+    mkdir_p
 from kaldi_utils import read_plda
 from VB_diarization import VB_diarization
 
@@ -56,7 +59,8 @@ def write_output(fp, out_labels, starts, ends):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--init', required=True, type=str, choices=['AHC', 'AHC+VB', 'random_5'],
-                        help='AHC for using only AHC or AHC+VB for VB-HMM after AHC initilization or random_5 for running 5 random initializations for VBx and picking the best per-ELBO', )
+                        help='AHC for using only AHC or AHC+VB for VB-HMM after AHC initilization or random_5 '
+                             'for running 5 random initializations for VBx and picking the best per-ELBO')
     parser.add_argument('--out-rttm-dir', required=True, type=str, help='Directory to store output rttm files')
     parser.add_argument('--xvec-ark-file', required=True, type=str,
                         help='Kaldi ark file with x-vectors from one or more input recordings. '
@@ -118,9 +122,14 @@ if __name__ == '__main__':
                 # similarities between all x-vectors)
                 scr_mx = cos_similarity(x)
                 # Figure out utterance specific args.threshold for AHC.
-                thr, junk = twoGMMcalib_lin(scr_mx.ravel())
+                thr, _ = twoGMMcalib_lin(scr_mx.ravel())
                 # output "labels" is an integer vector of speaker (cluster) ids
-                labels1st = AHC(scr_mx, thr + args.threshold)
+                scr_mx = squareform(-scr_mx, checks=False)
+                lin_mat = fastcluster.linkage(scr_mx, method='average', preserve_input='False')
+                del scr_mx
+                adjust = abs(lin_mat[:, 2].min())
+                lin_mat[:, 2] += adjust
+                labels1st = fcluster(lin_mat, -(thr + args.threshold) + adjust, criterion='distance') - 1
             if args.init.endswith('VB'):
                 # Smooth the hard labels obtained from AHC to soft assignments
                 # of x-vectors to speakers
