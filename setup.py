@@ -59,7 +59,7 @@ setup(
     packages=find_packages(),
     url='https://github.com/fnlandini/VBx_dev',
     install_requires=[
-        'numpy==1.19.4',
+        'numpy==1.21.2',
         'scipy==1.4.1',
         'sklearn==0.20.3',
         'numexpr==2.6.9',
