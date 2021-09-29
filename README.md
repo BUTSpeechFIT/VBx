@@ -59,8 +59,18 @@ ES2005a           7.06  29.99            0.65         0.78     0.71             
 
 ## Citations
 In case of using the software please cite:\
-F. Landini, J. Profant, M. Diez, L. Burget: [Bayesian HMM clustering of x-vector sequences (VBx) in speaker diarization: theory, implementation and analysis on standard tasks](https://arxiv.org/abs/2012.14952)
-
+F. Landini, J. Profant, M. Diez, L. Burget: [Bayesian HMM clustering of x-vector sequences (VBx) in speaker diarization: theory, implementation and analysis on standard tasks](https://www.sciencedirect.com/science/article/pii/S0885230821000619) [(arXiv version)](https://arxiv.org/abs/2012.14952)
+```
+@article{landini2022bayesian,
+  title={Bayesian HMM clustering of x-vector sequences (VBx) in speaker diarization: theory, implementation and analysis on standard tasks},
+  author={Landini, Federico and Profant, J{\'a}n and Diez, Mireia and Burget, Luk{\'a}{\v{s}}},
+  journal={Computer Speech \& Language},
+  volume={71},
+  pages={101254},
+  year={2022},
+  publisher={Elsevier}
+}
+```
 
 
 ## Results
