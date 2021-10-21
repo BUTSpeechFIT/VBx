@@ -3,6 +3,8 @@
 INSTRUCTION=$1
 METHOD=$2 # AHC or AHC+VB
 
+Fb=64 # if you want to replicate the results for Mix-Headset, change to Fb=68
+
 exp_dir=$3 # output experiment directory
 xvec_dir=$4 # output xvectors directory
 WAV_DIR=$5 # wav files directory
@@ -43,7 +45,7 @@ if [[ $INSTRUCTION = "diarization" ]]; then
 	smooth=7.0
 	lda_dim=128
 	Fa=0.4
-	Fb=64
+	
 	loopP=0.65
 	OUT_DIR=$exp_dir/out_dir_"$METHOD"
 	if [[ ! -d $OUT_DIR ]]; then
