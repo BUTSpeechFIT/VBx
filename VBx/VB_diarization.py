@@ -94,7 +94,6 @@ def VB_diarization(X, m, iE, V, pi=None, gamma=None, maxSpeakers=10, maxIters=10
     if ref is not None:
         Li[-1] += [DER(gamma, ref), DER(gamma, ref, xentropy=True)]
 
-    tr = np.eye(minDur*maxSpeakers, k=1)
     ip = np.zeros(minDur*maxSpeakers)
     for i in range(maxIters):
         L = 0  # objective function (37) (i.e. VB lower-bound on the evidence)
@@ -120,6 +119,7 @@ def VB_diarization(X, m, iE, V, pi=None, gamma=None, maxSpeakers=10, maxIters=10
         # self-loop probability 'loopProb' and the transition probabilities to the
         # initial chain states given by vector '(1-loopProb) * pi'. From all other,
         # states, one must move to the next state in the chain with probability one.
+        tr = np.eye(minDur*maxSpeakers, k=1)
         tr[minDur-1::minDur, 0::minDur] = (1-loopProb) * pi
         tr[(np.arange(1, maxSpeakers+1) * minDur - 1,) * 2] += loopProb
         ip[::minDur] = pi
