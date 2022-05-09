@@ -30,9 +30,12 @@ import argparse
 import os
 import itertools
 
+import fastcluster
 import h5py
 import kaldi_io
 import numpy as np
+from scipy.cluster.hierarchy import fcluster
+from scipy.spatial.distance import squareform
 from scipy.special import softmax
 from scipy.linalg import eigh
 
@@ -130,10 +133,17 @@ if __name__ == '__main__':
                 # Kaldi-like AHC of x-vectors (scr_mx is matrix of pairwise
                 # similarities between all x-vectors)
                 scr_mx = cos_similarity(x)
-                # Figure out utterance specific args.threshold for AHC.
-                thr, junk = twoGMMcalib_lin(scr_mx.ravel())
+                # Figure out utterance specific args.threshold for AHC
+                thr, _ = twoGMMcalib_lin(scr_mx.ravel())
                 # output "labels" is an integer vector of speaker (cluster) ids
-                labels1st = AHC(scr_mx, thr + args.threshold)
+                scr_mx = squareform(-scr_mx, checks=False)
+                lin_mat = fastcluster.linkage(
+                    scr_mx, method='average', preserve_input='False')
+                del scr_mx
+                adjust = abs(lin_mat[:, 2].min())
+                lin_mat[:, 2] += adjust
+                labels1st = fcluster(lin_mat, -(thr + args.threshold) + adjust,
+                    criterion='distance') - 1
             if args.init.endswith('VB'):
                 # Smooth the hard labels obtained from AHC to soft assignments
                 # of x-vectors to speakers
