@@ -40,7 +40,7 @@ from scipy.special import softmax
 from scipy.linalg import eigh
 
 from diarization_lib import read_xvector_timing_dict, l2_norm, \
-    cos_similarity, twoGMMcalib_lin, AHC, merge_adjacent_labels, mkdir_p
+    cos_similarity, twoGMMcalib_lin, merge_adjacent_labels, mkdir_p
 from kaldi_utils import read_plda
 from VBx import VBx
 
