@@ -28,7 +28,7 @@ The recipe as presented runs AHC as initialization for VBx. However, running AHC
 ## Getting started
 We recommend to create [anaconda](https://www.anaconda.com/) environment
 ```bash
-conda create -n VBx python=3.7
+conda create -n VBx python=3.9
 conda activate VBx
 ```
 Clone the repository
