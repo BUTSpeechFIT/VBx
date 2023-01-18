@@ -68,7 +68,7 @@ setup(
         'onnxruntime==1.4.0',
         'soundfile==0.10.3.post1',
         'kaldi_io',
-        'torch==1.6.0',
+        'torch==1.13.1',
         'tabulate==0.8.6',
         'intervaltree'
     ],
