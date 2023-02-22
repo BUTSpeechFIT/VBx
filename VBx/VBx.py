@@ -155,7 +155,7 @@ def forward_backward(lls, tr, ip):
         lfw - log forward probabilities
         lfw - log backward probabilities
     """
-    eps=1e-8
+    eps = 1e-8
     ltr = np.log(tr + eps)
     lfw = np.empty_like(lls)
     lbw = np.empty_like(lls)
