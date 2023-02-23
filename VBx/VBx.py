@@ -155,12 +155,13 @@ def forward_backward(lls, tr, ip):
         lfw - log forward probabilities
         lfw - log backward probabilities
     """
-    ltr = np.log(tr)
+    eps = 1e-8
+    ltr = np.log(tr + eps)
     lfw = np.empty_like(lls)
     lbw = np.empty_like(lls)
     lfw[:] = -np.inf
     lbw[:] = -np.inf
-    lfw[0] = lls[0] + np.log(ip)
+    lfw[0] = lls[0] + np.log(ip + eps)
     lbw[-1] = 0.0
 
     for ii in range(1, len(lls)):
