@@ -61,7 +61,7 @@ setup(
     install_requires=[
         'numpy',
         'scipy',
-        'sklearn',
+        'scikit-learn',
         'numexpr',
         'fastcluster',
         'h5py',
